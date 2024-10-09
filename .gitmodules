@@ -1,0 +1,8 @@
+[submodule "marin3r"]
+	path = marin3r
+	url = https://github.com/3scale-ops/marin3r.git
+  branch = main
+[submodule "drift-detection"]
+	path = drift-detection
+	url = https://github.com/arewm/drift-detection
+  branch = main

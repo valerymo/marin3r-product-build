@@ -1,0 +1,79 @@
+# Based on ./gatekeeper-operator/Dockerfile
+# Build the manager binary
+FROM registry.access.redhat.com/ubi9/go-toolset:1.21.11-9 as builder
+USER 0
+COPY drift-detection/detector.sh /detector.sh
+# Check to see if we need to react to any uptream changes
+COPY drift-cache /drift-cache
+WORKDIR /tmp
+COPY marin3r/Dockerfile .
+RUN /detector.sh ./Dockerfile /drift-cache/marin3r-operator/Dockerfile
+
+# TODO: cleanup if not needed
+#ENV LDFLAGS="-X ${VERSION_PKG}.gitVersion=v3.15.1-7 \
+#             -X ${VERSION_PKG}.gitCommit=59587323ce32580b4dffba0a09b1ca22109925db \
+#             -X ${VERSION_PKG}.gitTreeState=clean \
+#             -X ${VERSION_PKG}.buildDate="
+
+ENV LDFLAGS="-X ${VERSION_PKG}.buildDate="
+ENV OUTPUT_DIR="/tmp/_output"
+ENV BINARY_NAME="manager"
+
+WORKDIR /workspace
+# Copy the Go Modules manifests
+COPY marin3r/go.mod go.mod
+COPY marin3r/go.sum go.sum
+# cache deps before building and copying source so that we don't need to re-download as much
+# and so that source changes don't invalidate our downloaded layer
+RUN go mod download
+
+# Copy the go source
+COPY marin3r/main.go main.go
+COPY marin3r/apis/ apis/
+COPY marin3r/controllers/ controllers/
+COPY marin3r/pkg/ pkg/
+COPY marin3r/cmd/ cmd/
+
+# Build
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=$(go env GOARCH) go build -a -ldflags "${LDFLAGS}$(date -u +'%Y-%m-%dT%H:%M:%SZ')" -o ${OUTPUT_DIR}/${BINARY_NAME} main.go
+
+
+
+
+
+FROM registry.access.redhat.com/ubi9/ubi-minimal:latest
+
+# TODO: cleanup if not needed
+# Labels consumed by Red Hat build service
+#LABEL com.redhat.component="marin3r-operator-container" \
+#    name="3scale-mas/marin3r-rhel8-operator" \
+#    version="${CI_VERSION}"\
+#    summary="Lighweight, CRD based Envoy control plane for Kubernetes" \
+#    description="Lighweight, CRD based Envoy control plane for Kubernetes" \
+#    io.k8s.display-name="MARIN3R" \
+#    io.openshift.expose-services="" \
+#    io.openshift.tags="3scale, 3scale-amp, api, rhoam" \
+#    upstream_repo="${CI_MARIN3R_UPSTREAM_URL}" \
+#    upstream_ref="${CI_MARIN3R_UPSTREAM_COMMIT}" \
+#    maintainer="rvazquez@redhat.com"
+
+ENV OPERATOR_BINARY_NAME="manager" \
+  USER_UID=65532 \
+  USER_NAME=marin3r
+
+USER root
+
+# install operator binary
+COPY --from=builder /workspace/${OPERATOR_BINARY_NAME} /
+RUN chown ${USER_UID} /${OPERATOR_BINARY_NAME}
+
+# TODO: cleanup if not needed
+# Install licenses
+#ENV LICENSES_DIR="/root/licenses/marin3r-operator/"
+#RUN mkdir -p ${LICENSES_DIR}
+#COPY --from=builder /tmp/_output/licenses/licenses.xml ${LICENSES_DIR}
+#RUN chown ${USER_UID} ${LICENSES_DIR}/licenses.xml
+
+ENTRYPOINT ["/manager"]
+
+USER ${USER_UID}

@@ -1,0 +1,47 @@
+apiVersion: tekton.dev/v1
+kind: PipelineRun
+metadata:
+  annotations:
+    build.appstudio.openshift.io/repo: https://github.com/gsaslis/marin3r?rev={{revision}}
+    build.appstudio.redhat.com/commit_sha: '{{revision}}'
+    build.appstudio.redhat.com/target_branch: '{{target_branch}}'
+    pipelinesascode.tekton.dev/max-keep-runs: "3"
+    # when adding filter for directory use "directory/***".pathChanged()
+    # when adding filter for git submodule use "submodule".pathChanged()
+    pipelinesascode.tekton.dev/on-cel-expression: event == "push" && target_branch == "main" &&
+      (".tekton/single-arch-build-pipeline.yaml".pathChanged() ||
+      ".tekton/marin3r-operator-bundle-pull-request.yaml".pathChanged() ||
+      ".tekton/marin3r-operator-bundle-push.yaml".pathChanged() ||
+      "Containerfile.marin3r-operator-bundle".pathChanged() ||
+      "marin3r".pathChanged() ||
+      "bundle-hack/***".pathChanged())
+
+#      "bundle.Dockerfile".pathChanged() ||
+#      "bundle".pathChanged() ||
+#      "hack/***".pathChanged())
+  creationTimestamp: null
+  labels:
+    appstudio.openshift.io/application: marin3r
+    appstudio.openshift.io/component: marin3r-operator-bundle
+    pipelines.appstudio.openshift.io/type: build
+  name: marin3r-operator-bundle-on-push
+  namespace: api-management-tenant
+spec:
+  params:
+    - name: git-url
+      value: '{{source_url}}'
+    - name: revision
+      value: '{{revision}}'
+    - name: output-image
+      value: quay.io/redhat-user-workloads/api-management-tenant/marin3r/marin3r-operator-bundle:{{revision}}
+    - name: dockerfile
+      value: Containerfile.marin3r-operator-bundle
+    # Do not use hermetic for now as we are going to generate our manifest at build time. We need to pull in content.
+    - name: hermetic
+      value: "false"
+  pipelineRef:
+    name: single-arch-build-pipeline
+  workspaces:
+    - name: git-auth
+      secret:
+        secretName: '{{ git_auth_secret }}'

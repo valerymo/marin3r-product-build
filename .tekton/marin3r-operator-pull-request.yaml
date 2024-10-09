@@ -1,0 +1,65 @@
+apiVersion: tekton.dev/v1
+kind: PipelineRun
+metadata:
+  annotations:
+    build.appstudio.openshift.io/repo: https://gitlab.cee.redhat.com/api-management/product-builds/marin3r?rev={{revision}}
+    build.appstudio.redhat.com/commit_sha: '{{revision}}'
+    build.appstudio.redhat.com/pull_request_number: '{{pull_request_number}}'
+    build.appstudio.redhat.com/target_branch: '{{target_branch}}'
+    pipelinesascode.tekton.dev/max-keep-runs: "3"
+    # when adding filter for directory use "directory/***".pathChanged()
+    # when adding filter for git submodule use "submodule".pathChanged()
+    pipelinesascode.tekton.dev/on-cel-expression: event == "merge_request" && target_branch == "main" &&
+      (".tekton/multi-arch-build-pipeline.yaml".pathChanged() ||
+      ".tekton/marin3r-operator-pull-request.yaml".pathChanged() ||
+      ".tekton/marin3r-operator-push.yaml".pathChanged() ||
+      "Containerfile.marin3r-operator".pathChanged() ||
+      "marin3r".pathChanged())
+#      "Dockerfile".pathChanged() ||
+#      "apis".pathChanged()) ||
+#      "cmd".pathChanged()) ||
+#      "config".pathChanged()) ||
+#      "controllers".pathChanged()) ||
+#      "docs".pathChanged()) ||
+#      "examples".pathChanged()) ||
+#      "examples".pathChanged()) ||
+#      "generators".pathChanged()) ||
+#      "pkg".pathChanged()) ||
+#      "test".pathChanged())
+  creationTimestamp: null
+  labels:
+    appstudio.openshift.io/application: marin3r
+    appstudio.openshift.io/component: marin3r-operator
+    pipelines.appstudio.openshift.io/type: build
+  name: marin3r-operator-on-pull-request
+  namespace: api-management-tenant
+spec:
+  params:
+    - name: git-url
+      value: '{{source_url}}'
+    - name: revision
+      value: '{{revision}}'
+    - name: output-image
+      value: quay.io/redhat-user-workloads/api-management-tenant/marin3r/marin3r-operator:on-pr-{{revision}}
+    - name: image-expires-after
+      value: 5d
+    - name: dockerfile
+      value: Containerfile.marin3r-operator
+    - name: path-context
+      value: .
+    - name: build-platforms
+      value:
+        - localhost
+        - linux/arm64
+    #     - linux/ppc64le
+    #     - linux/s390x
+#    - name: prefetch-input
+#      value: '{"type": "gomod", "path": "."}'
+#    - name: hermetic
+#      value: "true"
+  pipelineRef:
+    name: multi-arch-build-pipeline
+  workspaces:
+    - name: git-auth
+      secret:
+        secretName: '{{ git_auth_secret }}'

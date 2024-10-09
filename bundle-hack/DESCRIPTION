@@ -1,0 +1,17 @@
+MARIN3R implements a control plane to deploy, configure and operate a fleet of envoy instances within a Kubernetes cluster.
+It operates a group of gateways and Pod sidecar containers to provide general purpose functionality required to operate production systems.
+
+Features:
+* Deploy and manage an Envoy xDS server using the DiscoveryService custom resource.
+* Inject Envoy sidecar containers based on Pod annotations.
+* Deploy Envoy as a Kubernetes Deployment using the EnvoyDeployment custom resource.
+* Dynamic Envoy configuration and re-configuration using the EnvoyConfig custom resource.
+* Use Kubernetes Secrets as certificate sources.
+* Syntactic validation of Envoy configurations.
+* Lifecycle management of Envoy containers (graceful shutdown and connection draining).
+* Self-healing.
+Check the [docs](https://github.com/3scale-ops/marin3r#readme) for more information.
+
+## License
+
+MARIN3R is licensed under the [Apache 2.0 license](https://github.com/3scale/prometheus-exporter-operator/blob/master/LICENSE)
