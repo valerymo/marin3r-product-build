@@ -67,14 +67,14 @@ csv_manifest['metadata']['annotations']['containerImage'] = os.getenv('MARIN3R_O
 # Ensure that any parameters are properly defined in the spec if you do not want to
 # put them in the CSV itself
 DESCRIPTION=$(cat "$__dir/DESCRIPTION")
-gatekeeper_csv['spec']['description'] = """$DESCRIPTION"""
+csv_manifest['spec']['description'] = """$DESCRIPTION"""
 ICON=$(cat "$__dir/ICON")
-gatekeeper_csv['spec']['icon'][0]['base64data'] = """$ICON"""
+csv_manifest['spec']['icon'][0]['base64data'] = """$ICON"""
 
 
 # Make sure that our latest nudged references are properly configured in the spec.relatedImages
 # NOTE: the names should be unique
-gatekeeper_csv['spec']['relatedImages'] = [
+csv_manifest['spec']['relatedImages'] = [
    {'name': 'marin3r-operator', 'image': os.getenv('MARIN3R_OPERATOR_IMAGE_PULLSPEC')}
 ]
 

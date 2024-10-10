@@ -8,7 +8,7 @@ FROM builder-runner as builder
 
 COPY bundle-hack .
 COPY marin3r/bundle/manifests /manifests/
-COPY gatekeeper-operator/bundle/metadata /metadata/
+COPY marin3r/bundle/metadata /metadata/
 
 RUN ./update_bundle.sh
 
