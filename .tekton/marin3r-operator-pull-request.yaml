@@ -9,7 +9,7 @@ metadata:
     pipelinesascode.tekton.dev/max-keep-runs: "3"
     # when adding filter for directory use "directory/***".pathChanged()
     # when adding filter for git submodule use "submodule".pathChanged()
-    pipelinesascode.tekton.dev/on-cel-expression: event == "merge_request" && target_branch == "main" &&
+    pipelinesascode.tekton.dev/on-cel-expression: event == "pull_request" && target_branch == "main" &&
       (".tekton/multi-arch-build-pipeline.yaml".pathChanged() ||
       ".tekton/marin3r-operator-pull-request.yaml".pathChanged() ||
       ".tekton/marin3r-operator-push.yaml".pathChanged() ||
