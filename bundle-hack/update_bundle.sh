@@ -66,10 +66,14 @@ csv_manifest['metadata']['annotations']['containerImage'] = os.getenv('MARIN3R_O
 
 # Ensure that any parameters are properly defined in the spec if you do not want to
 # put them in the CSV itself
-DESCRIPTION=$(cat "$__dir/DESCRIPTION")
-csv_manifest['spec']['description'] = """$DESCRIPTION"""
-ICON=$(cat "$__dir/ICON")
-csv_manifest['spec']['icon'][0]['base64data'] = """$ICON"""
+with open(f"{__dir}/DESCRIPTION", "r") as desc_file:
+    description = desc_file.read()
+
+with open(f"{__dir}/ICON", "r") as icon_file:
+    icon_data = icon_file.read()
+
+csv_manifest['spec']['description'] = description
+csv_manifest['spec']['icon'][0]['base64data'] = icon_data
 
 
 # Make sure that our latest nudged references are properly configured in the spec.relatedImages
