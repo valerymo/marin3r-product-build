@@ -58,7 +58,7 @@ spec:
 #    - name: hermetic
 #      value: "true"
   pipelineRef:
-    name: multi-arch-build-pipeline
+    name: build-pipeline
   workspaces:
   - name: git-auth
     secret:
