@@ -16,7 +16,6 @@ RUN /detector.sh ./Dockerfile /drift-cache/marin3r-operator/Dockerfile
 #             -X ${VERSION_PKG}.buildDate="
 
 ENV LDFLAGS="-X ${VERSION_PKG}.buildDate="
-ENV OUTPUT_DIR="/tmp/_output"
 ENV BINARY_NAME="manager"
 
 WORKDIR /workspace
@@ -35,7 +34,7 @@ COPY marin3r/pkg/ pkg/
 COPY marin3r/cmd/ cmd/
 
 # Build
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=$(go env GOARCH) go build -a -ldflags "${LDFLAGS}$(date -u +'%Y-%m-%dT%H:%M:%SZ')" -o ${OUTPUT_DIR}/${BINARY_NAME} main.go
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=$(go env GOARCH) go build -a -ldflags "${LDFLAGS}$(date -u +'%Y-%m-%dT%H:%M:%SZ')" -o ${BINARY_NAME} main.go
 
 
 FROM registry.access.redhat.com/ubi9/ubi-minimal:latest
