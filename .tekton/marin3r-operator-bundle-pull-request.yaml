@@ -41,7 +41,7 @@ spec:
   - name: prefetch-input
     value:
       - {"type": "rpm", "path": "."}
-      - {"type": "python", "path": "."}
+      - {"type": "pip", "path": "."}
   - name: prefetch-dev-package-managers-enabled
     value: "true"
   pipelineRef:
