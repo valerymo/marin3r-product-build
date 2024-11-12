@@ -1,14 +1,10 @@
 #!/usr/bin/env bash
 
-#export MARIN3R_MARIN3R_IMAGE_PULLSPEC="quay.io/redhat-user-workloads/api-management-tenant/marin3r/marin3r-operator@sha256:4632bc387e54960ce0bb0fdb4fdda89dbc8c7afc16c2427ff6e517fb47379256"
-
 export MARIN3R_OPERATOR_IMAGE_PULLSPEC="quay.io/redhat-user-workloads/api-management-tenant/marin3r/marin3r-operator@sha256:aa395edded8dde4a38e1033fa47e2fad6fa0bebc1aa0889d5da47afcb8f34267"
 
 export CSV_FILE=/manifests/marin3r.clusterserviceversion.yaml
 
-sed -i -e "s|quay.io/3scale/marin3r:v.*|\"${MARIN3R_MARIN3R_IMAGE_PULLSPEC}\"|g" \
-	-e "s|quay.io/3scale/marin3r:v.*|\"${MARIN3R_OPERATOR_IMAGE_PULLSPEC}\"|g" \
-	"${CSV_FILE}"
+sed -i -e "s|quay.io/3scale/marin3r:v.*|\"${MARIN3R_OPERATOR_IMAGE_PULLSPEC}\"|g" "${CSV_FILE}"
 
 export AMD64_BUILT=$(skopeo inspect --raw docker://${MARIN3R_OPERATOR_IMAGE_PULLSPEC} | jq -e '.manifests[] | select(.platform.architecture=="amd64")')
 export ARM64_BUILT=$(skopeo inspect --raw docker://${MARIN3R_OPERATOR_IMAGE_PULLSPEC} | jq -e '.manifests[] | select(.platform.architecture=="arm64")')
