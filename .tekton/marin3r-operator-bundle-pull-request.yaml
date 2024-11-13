@@ -18,6 +18,9 @@ metadata:
       "bundle-hack/***".pathChanged() ||
       "rpms.in.yaml".pathChanged() ||
       "rpms.lock.yaml".pathChanged() ||
+      "requirements.txt".pathChanged() ||
+      "requirements-build.txt".pathChanged() ||
+      "requirements-build.in".pathChanged() ||
       "pyproject.toml".pathChanged())
 
   creationTimestamp: null
