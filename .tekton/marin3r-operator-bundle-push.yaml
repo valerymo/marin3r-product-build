@@ -14,7 +14,10 @@ metadata:
       ".tekton/marin3r-operator-bundle-push.yaml".pathChanged() ||
       "Containerfile.marin3r-operator-bundle".pathChanged() ||
       "marin3r".pathChanged() ||
-      "bundle-hack/***".pathChanged())
+      "bundle-hack/***".pathChanged() ||
+      "rpms.in.yaml".pathChanged() ||
+      "rpms.lock.yaml".pathChanged() ||
+      "pyproject.toml".pathChanged())
   creationTimestamp: null
   labels:
     appstudio.openshift.io/application: marin3r
