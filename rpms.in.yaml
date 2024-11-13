@@ -11,3 +11,6 @@ packages:
   - python3
   - python3-pip
   - skopeo
+
+context:
+  containerfile: Containerfile.marin3r-operator-bundle
