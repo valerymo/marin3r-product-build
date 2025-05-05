@@ -1,15 +1,10 @@
 #!/usr/bin/env bash
 
-export MARIN3R_OPERATOR_IMAGE_PULLSPEC="quay.io/redhat-user-workloads/api-management-tenant/marin3r/marin3r-operator@sha256:aa395edded8dde4a38e1033fa47e2fad6fa0bebc1aa0889d5da47afcb8f34267"
+export MARIN3R_OPERATOR_IMAGE_PULLSPEC="quay.io/redhat-user-workloads/api-management-tenant/marin3r-operator-image@sha256:73d156aefbdf928e54fa8e7369be12fa732fd49081743a1eeebe9c3d5404c305"
 
 export CSV_FILE=/manifests/marin3r.clusterserviceversion.yaml
 
 sed -i -e "s|quay.io/3scale/marin3r:v.*|\"${MARIN3R_OPERATOR_IMAGE_PULLSPEC}\"|g" "${CSV_FILE}"
-
-export AMD64_BUILT=$(skopeo inspect --raw docker://${MARIN3R_OPERATOR_IMAGE_PULLSPEC} | jq -e '.manifests[] | select(.platform.architecture=="amd64")')
-export ARM64_BUILT=$(skopeo inspect --raw docker://${MARIN3R_OPERATOR_IMAGE_PULLSPEC} | jq -e '.manifests[] | select(.platform.architecture=="arm64")')
-export PPC64LE_BUILT=$(skopeo inspect --raw docker://${MARIN3R_OPERATOR_IMAGE_PULLSPEC} | jq -e '.manifests[] | select(.platform.architecture=="ppc64le")')
-export S390X_BUILT=$(skopeo inspect --raw docker://${MARIN3R_OPERATOR_IMAGE_PULLSPEC} | jq -e '.manifests[] | select(.platform.architecture=="s390x")')
 
 export EPOC_TIMESTAMP=$(date +%s)
 # time for some direct modifications to the csv
@@ -39,14 +34,6 @@ datetime_time = datetime.fromtimestamp(timestamp)
 csv_manifest = load_manifest(os.getenv('CSV_FILE'))
 # Add arch and os support labels
 csv_manifest['metadata']['labels'] = csv_manifest['metadata'].get('labels', {})
-if os.getenv('AMD64_BUILT'):
-	csv_manifest['metadata']['labels']['operatorframework.io/arch.amd64'] = 'supported'
-if os.getenv('ARM64_BUILT'):
-	csv_manifest['metadata']['labels']['operatorframework.io/arch.arm64'] = 'supported'
-if os.getenv('PPC64LE_BUILT'):
-	csv_manifest['metadata']['labels']['operatorframework.io/arch.ppc64le'] = 'supported'
-if os.getenv('S390X_BUILT'):
-	csv_manifest['metadata']['labels']['operatorframework.io/arch.s390x'] = 'supported'
 csv_manifest['metadata']['labels']['operatorframework.io/os.linux'] = 'supported'
 csv_manifest['metadata']['annotations']['createdAt'] = datetime_time.strftime('%d %b %Y, %H:%M')
 csv_manifest['metadata']['annotations']['features.operators.openshift.io/disconnected'] = 'true'
@@ -59,24 +46,7 @@ csv_manifest['metadata']['annotations']['features.operators.openshift.io/token-a
 # Ensure that other annotations are accurate
 csv_manifest['metadata']['annotations']['repository'] = 'https://github.com/3scale-ops/marin3r'
 csv_manifest['metadata']['annotations']['containerImage'] = os.getenv('MARIN3R_OPERATOR_IMAGE_PULLSPEC', '')
-
-# Ensure that any parameters are properly defined in the spec if you do not want to
-# put them in the CSV itself
-with open(f"{__dir}/DESCRIPTION", "r") as desc_file:
-    description = desc_file.read()
-
-with open(f"{__dir}/ICON", "r") as icon_file:
-    icon_data = icon_file.read()
-
-csv_manifest['spec']['description'] = description
-csv_manifest['spec']['icon'][0]['base64data'] = icon_data
-
-
-# Make sure that our latest nudged references are properly configured in the spec.relatedImages
-# NOTE: the names should be unique
-csv_manifest['spec']['relatedImages'] = [
-   {'name': 'marin3r-operator', 'image': os.getenv('MARIN3R_OPERATOR_IMAGE_PULLSPEC')}
-]
+csv_manifest['metadata']['annotations']['olm.skipRange'] = '>=0.11.1 <0.13.2'
 
 dump_manifest(os.getenv('CSV_FILE'), csv_manifest)
 CSV_UPDATE
