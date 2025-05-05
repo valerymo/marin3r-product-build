@@ -24,12 +24,13 @@ COPY marin3r/go.mod go.mod
 COPY marin3r/go.sum go.sum
 # cache deps before building and copying source so that we don't need to re-download as much
 # and so that source changes don't invalidate our downloaded layer
-RUN go mod download
-
 # Copy the go source
 COPY marin3r/api/ api/
 COPY marin3r/cmd/ cmd/
 COPY marin3r/internal/ internal/
+
+RUN go mod download
+
 COPY marin3r/vendor/ vendor/
 
 # Build
