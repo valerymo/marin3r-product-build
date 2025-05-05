@@ -27,14 +27,13 @@ COPY marin3r/go.sum go.sum
 RUN go mod download
 
 # Copy the go source
-COPY marin3r/main.go main.go
-COPY marin3r/apis/ apis/
-COPY marin3r/controllers/ controllers/
-COPY marin3r/pkg/ pkg/
+COPY marin3r/api/ api/
 COPY marin3r/cmd/ cmd/
+COPY marin3r/internal/ internal/
+COPY marin3r/vendor/ vendor/
 
 # Build
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=$(go env GOARCH) go build -a -ldflags "${LDFLAGS}$(date -u +'%Y-%m-%dT%H:%M:%SZ')" -o ${BINARY_NAME} main.go
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=$(go env GOARCH) go build -a -ldflags "${LDFLAGS}$(date -u +'%Y-%m-%dT%H:%M:%SZ')" -o ${BINARY_NAME} cmd/main.go
 
 
 FROM registry.access.redhat.com/ubi9/ubi-minimal:latest
