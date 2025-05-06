@@ -7,8 +7,18 @@ metadata:
     build.appstudio.redhat.com/target_branch: '{{target_branch}}'
     pipelinesascode.tekton.dev/cancel-in-progress: "false"
     pipelinesascode.tekton.dev/max-keep-runs: "3"
-    pipelinesascode.tekton.dev/on-cel-expression: event == "push" && target_branch
-      == "main"
+    pipelinesascode.tekton.dev/on-cel-expression: event == "push" && target_branch == "main" &&
+      (".tekton/marin3r-operator-bundle-pull-request.yaml".pathChanged() ||
+      ".tekton/marin3r-operator-bundle-push.yaml".pathChanged() ||
+      ".tekton/marin3r-operator-image-pull-request.yaml".pathChanged() ||
+      ".tekton/marin3r-operator-image-push.yaml".pathChanged() ||
+      "Containerfile.marin3r-operator".pathChanged() ||
+      "Containerfile.marin3r-operator-bundle".pathChanged() ||
+      "marin3r".pathChanged() ||
+      "bundle-hack/***".pathChanged() ||
+      "rpms.in.yaml".pathChanged() ||
+      "rpms.lock.yaml".pathChanged() ||
+      "pyproject.toml".pathChanged())
   creationTimestamp: null
   labels:
     appstudio.openshift.io/application: marin3r-operator
@@ -26,6 +36,16 @@ spec:
     value: quay.io/redhat-user-workloads/api-management-tenant/marin3r-operator-bundle:{{revision}}
   - name: dockerfile
     value: Containerfile.marin3r-operator-bundle
+  - name: hermetic
+    value: "true"
+  - name: prefetch-input
+    value:
+      - {"type": "rpm", "path": "."}
+      - {"type": "pip", "path": "."}
+  - name: prefetch-dev-package-managers-enabled
+    value: "true"
+  - name: build-source-image
+    value: "true"
   pipelineSpec:
     description: |
       This pipeline is ideal for building container images from a Containerfile while maintaining trust after pipeline customization.

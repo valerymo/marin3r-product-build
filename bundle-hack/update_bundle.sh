@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-export MARIN3R_OPERATOR_IMAGE_PULLSPEC="quay.io/redhat-user-workloads/api-management-tenant/marin3r-operator-image@sha256:73d156aefbdf928e54fa8e7369be12fa732fd49081743a1eeebe9c3d5404c305"
+export MARIN3R_OPERATOR_IMAGE_PULLSPEC="quay.io/integreatly/marin3r-operator:v0.13.2"
 
 export CSV_FILE=/manifests/marin3r.clusterserviceversion.yaml
 
