@@ -2,6 +2,9 @@
 # Build the manager binary
 FROM mirror.gcr.io/library/golang:1.24 as builder
 USER 0
+
+ENV GOTOOLCHAIN=local
+
 COPY drift-detection/detector.sh /detector.sh
 # Check to see if we need to react to any uptream changes
 COPY drift-cache /drift-cache
@@ -28,6 +31,9 @@ COPY marin3r/go.sum go.sum
 COPY marin3r/api/ api/
 COPY marin3r/cmd/ cmd/
 COPY marin3r/internal/ internal/
+
+# Debug: Show GOWORK (non-fatal if not set)
+RUN go env GOWORK || echo "No go.work in use (this is OK)"
 
 RUN go mod download
 
