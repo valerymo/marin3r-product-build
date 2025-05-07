@@ -37,7 +37,7 @@ spec:
   - name: dockerfile
     value: Containerfile.marin3r-operator
   - name: prefetch-input
-    value: '{"type": "gomod", "path": "marin3r/api/"}'
+    value: '[{"type": "gomod", "path": "marin3r/"}, {"type": "gomod", "path": "marin3r/api/"}]'
   - name: hermetic
     value: "true"
   - name: build-source-image
