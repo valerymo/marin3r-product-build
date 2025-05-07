@@ -1,18 +1,6 @@
 # Based on ./gatekeeper-operator/Dockerfile
 # Build the manager binary
-#FROM mirror.gcr.io/library/golang:1.24 as builder
-
-# ----- replace mirror.gcr.io/library/golang:1.24
-FROM debian:bullseye-slim as builder
-
-RUN apt-get update && apt-get install -y curl tar git build-essential ca-certificates && \
-    curl -LO https://go.dev/dl/go1.24.linux-amd64.tar.gz && \
-    tar -C /usr/local -xzf go1.24.linux-amd64.tar.gz && \
-    ln -s /usr/local/go/bin/go /usr/bin/go && \
-    ln -s /usr/local/go/bin/gofmt /usr/bin/gofmt
-
-ENV PATH="/usr/local/go/bin:${PATH}"
-# ----- end of replace
+FROM mirror.gcr.io/library/golang:1.24 as builder
 
 USER 0
 COPY drift-detection/detector.sh /detector.sh
