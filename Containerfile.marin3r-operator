@@ -29,10 +29,10 @@ COPY marin3r/api/ api/
 COPY marin3r/cmd/ cmd/
 COPY marin3r/internal/ internal/
 COPY marin3r/vendor/ vendor/
+COPY marin3r/LICENSE licenses/
 
 # Build
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=$(go env GOARCH) go build -a -ldflags "${LDFLAGS}$(date -u +'%Y-%m-%dT%H:%M:%SZ')" -o ${BINARY_NAME} cmd/main.go
-
 
 FROM registry.redhat.io/ubi9/ubi-minimal:latest
 
@@ -56,12 +56,7 @@ USER root
 COPY --from=builder /workspace/${OPERATOR_BINARY_NAME} /
 RUN chown ${USER_UID} /${OPERATOR_BINARY_NAME}
 
-# TODO: cleanup if not needed
-# Install licenses
-ENV LICENSES_DIR="/root/licenses/marin3r-operator/"
-RUN mkdir -p ${LICENSES_DIR}
-COPY --from=builder /tmp/_output/licenses/licenses.xml ${LICENSES_DIR}
-RUN chown ${USER_UID} ${LICENSES_DIR}/licenses.xml
+COPY --from=builder /workspace/licenses /licenses
 
 ENTRYPOINT ["/manager"]
 
