@@ -194,6 +194,17 @@ spec:
         workspace: git-auth
       - name: netrc
         workspace: netrc
+      script: |
+        #!/bin/bash
+        set -e
+        # Ensure Go modules are tidy and all dependencies are downloaded
+        go mod tidy
+        go mod download
+        # Run cachi2 snapshot to cache dependencies
+        cachi2 snapshot \
+          --output-dir /cachi2/output/deps/gomod \
+          --gomod-path ./go.mod \
+          --gosum-path ./go.sum
     - name: build-container
       params:
       - name: IMAGE
