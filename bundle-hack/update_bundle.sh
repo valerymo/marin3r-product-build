@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
-export MARIN3R_OPERATOR_IMAGE_PULLSPEC="quay.io/redhat-user-workloads/api-management-tenant/marin3r-operator-image@sha256:73d156aefbdf928e54fa8e7369be12fa732fd49081743a1eeebe9c3d5404c305"
+export MARIN3R_OPERATOR_IMAGE_PULLSPEC="quay.io/integreatly/marin3r-operator:v0.13.2"
 
 export CSV_FILE=/manifests/marin3r.clusterserviceversion.yaml
 
-sed -i -e "s|quay.io/3scale/marin3r:v.*|\"${MARIN3R_OPERATOR_IMAGE_PULLSPEC}\"|g" "${CSV_FILE}"
+sed -i -e "s|quay.io/3scale-sre/marin3r:v.*|\"${MARIN3R_OPERATOR_IMAGE_PULLSPEC}\"|g" "${CSV_FILE}"
 
 export EPOC_TIMESTAMP=$(date +%s)
 # time for some direct modifications to the csv
@@ -46,6 +46,10 @@ csv_manifest['metadata']['annotations']['features.operators.openshift.io/token-a
 # Ensure that other annotations are accurate
 csv_manifest['metadata']['annotations']['repository'] = 'https://github.com/3scale-ops/marin3r'
 csv_manifest['metadata']['annotations']['containerImage'] = os.getenv('MARIN3R_OPERATOR_IMAGE_PULLSPEC', '')
+csv_manifest['metadata']['annotations']['features.operators.openshift.io/cnf'] = 'false'
+csv_manifest['metadata']['annotations']['features.operators.openshift.io/cni'] = 'false'
+csv_manifest['metadata']['annotations']['features.operators.openshift.io/csi'] = 'false'
+
 csv_manifest['metadata']['annotations']['olm.skipRange'] = '>=0.11.1 <0.13.2'
 
 dump_manifest(os.getenv('CSV_FILE'), csv_manifest)
