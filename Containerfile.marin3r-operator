@@ -28,13 +28,6 @@ COPY marin3r/go.sum go.sum
 COPY marin3r/api/ api/
 COPY marin3r/cmd/ cmd/
 COPY marin3r/internal/ internal/
-
-RUN mkdir -p /cachi2/output/deps/gomod && \
-    tar -xzf /workspace/cachi2-workspace/cachi2-artifact.tar.gz -C /cachi2/output/deps/gomod && \
-    . /cachi2/cachi2.env && \
-    go mod download
-
-
 COPY marin3r/vendor/ vendor/
 
 # Build
