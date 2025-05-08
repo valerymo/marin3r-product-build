@@ -168,22 +168,6 @@ spec:
       workspaces:
       - name: basic-auth
         workspace: git-auth
-    - name: go-mod-vendor
-      runAfter:
-        - clone-repository
-      taskSpec:
-        steps:
-          - name: go-vendor
-            image: golang:1.24
-            workingDir: $(workspaces.basic-auth.path)/marin3r
-            script: |
-              #!/bin/sh
-              echo "Running go mod tidy and go mod vendor..."
-              go mod tidy
-              go mod vendor
-        workspaces:
-          - name: basic-auth
-            workspace: git-auth
     - name: prefetch-dependencies
       params:
       - name: input
@@ -196,7 +180,6 @@ spec:
         value: $(params.image-expires-after)
       runAfter:
       - clone-repository
-      - go-mod-vendor
       taskRef:
         params:
         - name: name
@@ -240,7 +223,6 @@ spec:
         value: $(tasks.prefetch-dependencies.results.CACHI2_ARTIFACT)
       runAfter:
       - prefetch-dependencies
-      - go-mod-vendor
       taskRef:
         params:
         - name: name
