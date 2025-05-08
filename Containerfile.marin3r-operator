@@ -28,30 +28,23 @@ COPY marin3r/go.sum go.sum
 COPY marin3r/api/ api/
 COPY marin3r/cmd/ cmd/
 COPY marin3r/internal/ internal/
-
-RUN go mod download
-
 COPY marin3r/vendor/ vendor/
+COPY marin3r/LICENSE licenses/
 
 # Build
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=$(go env GOARCH) go build -a -ldflags "${LDFLAGS}$(date -u +'%Y-%m-%dT%H:%M:%SZ')" -o ${BINARY_NAME} cmd/main.go
 
-
 FROM registry.access.redhat.com/ubi9/ubi-minimal:latest
 
-# TODO: cleanup if not needed
-# Labels consumed by Red Hat build service
-#LABEL com.redhat.component="marin3r-operator-container" \
-#    name="3scale-mas/marin3r-rhel8-operator" \
-#    version="${CI_VERSION}"\
-#    summary="Lighweight, CRD based Envoy control plane for Kubernetes" \
-#    description="Lighweight, CRD based Envoy control plane for Kubernetes" \
-#    io.k8s.display-name="MARIN3R" \
-#    io.openshift.expose-services="" \
-#    io.openshift.tags="3scale, 3scale-amp, api, rhoam" \
-#    upstream_repo="${CI_MARIN3R_UPSTREAM_URL}" \
-#    upstream_ref="${CI_MARIN3R_UPSTREAM_COMMIT}" \
-#    maintainer="rvazquez@redhat.com"
+LABEL com.redhat.component="marin3r-operator-container" \
+   name="3scale-mas/marin3r-operator" \
+   version="alpha"\
+   summary="Lighweight, CRD based Envoy control plane for Kubernetes" \
+   description="Lighweight, CRD based Envoy control plane for Kubernetes" \
+   io.k8s.display-name="MARIN3R" \
+   io.openshift.expose-services="" \
+   io.openshift.tags="3scale, 3scale-amp, api, rhoam" \
+   maintainer="rvazquez@redhat.com"
 
 ENV OPERATOR_BINARY_NAME="manager" \
   USER_UID=65532 \
@@ -63,12 +56,7 @@ USER root
 COPY --from=builder /workspace/${OPERATOR_BINARY_NAME} /
 RUN chown ${USER_UID} /${OPERATOR_BINARY_NAME}
 
-# TODO: cleanup if not needed
-# Install licenses
-#ENV LICENSES_DIR="/root/licenses/marin3r-operator/"
-#RUN mkdir -p ${LICENSES_DIR}
-#COPY --from=builder /tmp/_output/licenses/licenses.xml ${LICENSES_DIR}
-#RUN chown ${USER_UID} ${LICENSES_DIR}/licenses.xml
+COPY --from=builder /workspace/licenses /licenses
 
 ENTRYPOINT ["/manager"]
 

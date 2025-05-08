@@ -26,6 +26,9 @@ spec:
     value: quay.io/redhat-user-workloads/api-management-tenant/marin3r-operator-image:{{revision}}
   - name: dockerfile
     value: Containerfile.marin3r-operator
+  - name: prefetch-input
+    value:
+      - {"type": "gomod", "path": "marin3r/"}
   pipelineSpec:
     description: |
       This pipeline is ideal for building container images from a Containerfile while maintaining trust after pipeline customization.
@@ -75,7 +78,7 @@ spec:
       description: Skip checks against built image
       name: skip-checks
       type: string
-    - default: "false"
+    - default: "true"
       description: Execute the build with network isolation
       name: hermetic
       type: string
