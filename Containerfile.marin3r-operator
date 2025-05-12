@@ -44,7 +44,7 @@ LABEL com.redhat.component="marin3r-operator-container" \
    io.k8s.display-name="MARIN3R" \
    io.openshift.expose-services="" \
    io.openshift.tags="3scale, 3scale-amp, api, rhoam" \
-   maintainer="rvazquez@redhat.com"
+   io.k8s.description="MARIN3R operator"
 
 ENV OPERATOR_BINARY_NAME="manager" \
   USER_UID=65532 \

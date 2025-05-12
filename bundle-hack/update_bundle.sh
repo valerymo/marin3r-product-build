@@ -35,16 +35,6 @@ csv_manifest = load_manifest(os.getenv('CSV_FILE'))
 # Add arch and os support labels
 csv_manifest['metadata']['labels'] = csv_manifest['metadata'].get('labels', {})
 csv_manifest['metadata']['labels']['operatorframework.io/os.linux'] = 'supported'
-csv_manifest['metadata']['labels']['com.redhat.component'] = 'marin3r-operator-image'
-csv_manifest['metadata']['labels']['description'] = 'Lighweight, CRD based Envoy control plane for Kubernetes'
-csv_manifest['metadata']['labels']['distribution-scope'] = 'public'
-csv_manifest['metadata']['labels']['io.k8s.description'] = 'MARIN3R operator'
-csv_manifest['metadata']['labels']['name'] = '3scale-mas/marin3r-operator'
-csv_manifest['metadata']['labels']['release'] = 'v0.13.1'
-csv_manifest['metadata']['labels']['url'] = 'https://github.com/3scale-sre/marin3r'
-csv_manifest['metadata']['labels']['vendor'] = 'Red Hat'
-csv_manifest['metadata']['labels']['version'] = 'alpha'
-
 csv_manifest['metadata']['annotations']['createdAt'] = datetime_time.strftime('%d %b %Y, %H:%M')
 csv_manifest['metadata']['annotations']['features.operators.openshift.io/disconnected'] = 'true'
 csv_manifest['metadata']['annotations']['features.operators.openshift.io/fips-compliant'] = 'true'
