@@ -30,11 +30,16 @@ LABEL operators.operatorframework.io.test.mediatype.v1=scorecard+v1
 LABEL operators.operatorframework.io.test.config.v1=tests/scorecard/
 
 # TODO: cleanup if not needed
-#LABEL com.redhat.component="marin3r-operator-bundle-container" \
-#      name="3scale-mas/marin3r-rhel8-operator-metadata" \
-#      version="${CI_VERSION}" \
-#      summary="Lighweight, CRD based Envoy control plane for Kubernetes" \
-#      description="Lighweight, CRD based Envoy control plane for Kubernetes" \
+LABEL com.redhat.component="marin3r-operator-bundle-container" \
+      name="3scale-mas/marin3r-operator" \
+      version="alpha" \
+      summary="Lighweight, CRD based Envoy control plane for Kubernetes" \
+      description="Lighweight, CRD based Envoy control plane for Kubernetes" \
+      distribution-scope="public" \
+      io.k8s.description="MARIN3R operator" \
+      release="v0.13.2" \
+      url="https://github.com/3scale-sre/marin3r" \
+      vendor="Red Hat"
 #      io.k8s.display-name="MARIN3R" \
 #      io.openshift.expose-services="" \
 #      io.openshift.tags="3scale, api, envoy" \
