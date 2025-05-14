@@ -37,15 +37,8 @@ LABEL com.redhat.component="marin3r-operator-bundle-container" \
       description="Lighweight, CRD based Envoy control plane for Kubernetes" \
       distribution-scope="public" \
       io.k8s.description="MARIN3R operator" \
-      release="v0.13.2" \
       url="https://github.com/3scale-sre/marin3r" \
       vendor="Red Hat, Inc."
-#      io.k8s.display-name="MARIN3R" \
-#      io.openshift.expose-services="" \
-#      io.openshift.tags="3scale, api, envoy" \
-#      upstream_repo="${CI_MARIN3R_UPSTREAM_URL}" \
-#      upstream_ref="${CI_MARIN3R_UPSTREAM_COMMIT}" \
-#      maintainer="rvazquez@redhat.com"
 
 # Copy files to locations specified by labels.
 COPY --from=builder /manifests /manifests/
