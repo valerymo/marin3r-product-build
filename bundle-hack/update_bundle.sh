@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-export MARIN3R_OPERATOR_IMAGE_PULLSPEC="quay.io/integreatly/marin3r-operator:v0.13.2"
+export MARIN3R_OPERATOR_IMAGE_PULLSPEC="quay.io/vmogilev_rhmi/marin3r-operator:v0.13.2"
 
 export CSV_FILE=/manifests/marin3r.clusterserviceversion.yaml
 
