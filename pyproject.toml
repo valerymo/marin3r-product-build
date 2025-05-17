@@ -3,5 +3,5 @@ name = "cloud-resource-operator-bundle"
 version = "0.1.0"
 dependencies = [
     "ruamel.yaml==0.18.10",
-    "ruamel.yaml.clib==0.1.2"
+    "ruamel.yaml.clib==0.2.12"
 ]
